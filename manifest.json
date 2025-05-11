@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "MakerWorld Progress",
+    "version": "1.0",
+    "description": "显示MakerWorld积分进度",
+    "permissions": [
+        "storage"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.makerworld.com/*",
+                "*://*.makerworld.com.cn/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}
