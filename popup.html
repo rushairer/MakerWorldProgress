@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <style>
             body {
-                width: 300px;
+                width: 360px;
                 padding: 10px;
                 font-family: Arial, sans-serif;
             }
@@ -18,7 +18,8 @@
                 align-items: center;
                 gap: 10px;
             }
-            input {
+            input,
+            select {
                 padding: 5px;
                 border: 1px solid #ccc;
                 border-radius: 4px;
@@ -35,6 +36,14 @@
             button:hover {
                 background-color: #45a049;
             }
+            .points-input-container {
+                display: flex;
+                gap: 5px;
+            }
+            .points-input-container input,
+            .points-input-container select {
+                flex: 1;
+            }
         </style>
     </head>
     <body>
@@ -42,7 +51,12 @@
             <h2>MakerWorld进度设置</h2>
             <div class="input-group">
                 <label for="targetPoints">目标积分：</label>
-                <input type="number" id="targetPoints" min="0" step="1" />
+                <div class="points-input-container">
+                    <input type="number" id="targetPoints" min="0" step="1" />
+                    <select id="presetPoints">
+                        <option value="">选择预设值</option>
+                    </select>
+                </div>
             </div>
             <button id="save">保存设置</button>
         </div>
