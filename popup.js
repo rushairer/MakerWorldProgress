@@ -1,4 +1,62 @@
+// 定义网站URL
+const SITES = {
+    com: 'https://makerworld.com',
+    cn: 'https://makerworld.com.cn',
+}
+
+// 检查登录状态
+async function checkLoginStatus() {
+    for (const [key, url] of Object.entries(SITES)) {
+        const statusElement = document.getElementById(`${key}-status`)
+        const pointsElement = document.getElementById(`${key}-points`)
+        try {
+            const cookies = await chrome.cookies.getAll({
+                domain: new URL(url).hostname,
+            })
+            const isLoggedIn = cookies.some(
+                (cookie) => cookie.name === 'token' || cookie.name === 'session'
+            )
+            
+            statusElement.textContent = isLoggedIn ? '已登录' : '未登录'
+            statusElement.className = `status ${isLoggedIn ? 'logged-in' : 'logged-out'}`
+
+            if (isLoggedIn) {
+                try {
+                    const response = await fetch(`${url}/points`, {
+                        credentials: 'include',
+                    })
+                    const text = await response.text()
+                    const pointsMatch = text.match(/class="mw-css-yyek0l"[^>]*>([\d,]+)/i)
+                    
+                    if (pointsMatch) {
+                        const currentPoints = parseInt(pointsMatch[1].replace(/,/g, ''))
+                        const targetPoints = await chrome.storage.sync.get(['targetPoints'])
+                        const progress = targetPoints.targetPoints ? 
+                            ((currentPoints / targetPoints.targetPoints) * 100).toFixed(2) : '0.00'
+                        
+                        pointsElement.textContent = `${currentPoints.toLocaleString()} (${progress}%)`
+                    } else {
+                        pointsElement.textContent = '无法获取积分'
+                    }
+                } catch (error) {
+                    pointsElement.textContent = '积分获取失败'
+                    console.error(`获取积分失败 ${url}:`, error)
+                }
+            } else {
+                pointsElement.textContent = '请先登录'
+            }
+        } catch (error) {
+            statusElement.textContent = '检查失败'
+            statusElement.className = 'status logged-out'
+            pointsElement.textContent = '状态检查失败'
+            console.error(`检查登录状态失败 ${url}:`, error)
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // 检查登录状态
+    checkLoginStatus()
     const targetPointsInput = document.getElementById('targetPoints')
     const presetPointsSelect = document.getElementById('presetPoints')
     const saveButton = document.getElementById('save')

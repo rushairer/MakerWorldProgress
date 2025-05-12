@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <style>
             body {
-                width: 360px;
+                width: 500px;
                 padding: 10px;
                 font-family: Arial, sans-serif;
             }
@@ -44,11 +44,146 @@
             .points-input-container select {
                 flex: 1;
             }
+            .login-status {
+                background-color: #f5f5f5;
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+            .site-status {
+                display: flex;
+                gap: 12px;
+                padding: 8px 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .site-status-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: 1;
+            }
+            .site-status-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                min-width: 100px;
+            }
+            .points-info {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 15px;
+                background-color: #f0f7ff;
+                color: #daa520;
+                min-width: 160px;
+                text-align: center;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                white-space: nowrap;
+            }
+            .points-info:before {
+                content: '';
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                background-image: url('icon.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+            .site-status:last-child {
+                border-bottom: none;
+            }
+            .site-name {
+                font-weight: 600;
+                color: #333;
+                min-width: 120px;
+            }
+            .status {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+            .status.logged-in {
+                background-color: #e8f5e9;
+                color: #2e7d32;
+            }
+            .status.logged-out {
+                background-color: #ffebee;
+                color: #c62828;
+            }
+            .site-link {
+                color: #1976d2;
+                text-decoration: none;
+                font-size: 14px;
+                margin-left: auto;
+                padding: 6px 12px;
+                border-radius: 6px;
+                background-color: #f5f9ff;
+                border: 1px solid #e3f2fd;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.2s ease;
+            }
+            .site-link:before {
+                content: '';
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231976d2'%3E%3Cpath d='M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/%3E%3C/svg%3E");
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+            .site-link:hover {
+                color: #1565c0;
+                background-color: #e3f2fd;
+                border-color: #bbdefb;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(25, 118, 210, 0.1);
+            }
         </style>
     </head>
     <body>
         <div class="container">
             <h2>MakerWorld进度设置</h2>
+            <div class="login-status">
+                <div class="site-status">
+                    <div class="site-status-info">
+                        <span class="site-name">MakerWorld.com</span>
+                        <span id="com-points" class="points-info"
+                            >积分加载中...</span
+                        >
+                    </div>
+                    <div class="site-status-actions">
+                        <span id="com-status" class="status">检查中...</span>
+                        <a
+                            href="https://makerworld.com"
+                            target="_blank"
+                            class="site-link"
+                            >访问网站</a
+                        >
+                    </div>
+                </div>
+                <div class="site-status">
+                    <div class="site-status-info">
+                        <span class="site-name">MakerWorld.com.cn</span>
+                        <span id="cn-points" class="points-info"
+                            >积分加载中...</span
+                        >
+                    </div>
+                    <div class="site-status-actions">
+                        <span id="cn-status" class="status">检查中...</span>
+                        <a
+                            href="https://makerworld.com.cn"
+                            target="_blank"
+                            class="site-link"
+                            >访问网站</a
+                        >
+                    </div>
+                </div>
+            </div>
             <div class="input-group">
                 <label for="targetPoints">目标积分：</label>
                 <div class="points-input-container">
