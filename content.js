@@ -1,7 +1,9 @@
 // 创建MutationObserver监听DOM变化
 const observer = new MutationObserver((mutations) => {
     mutations.forEach(() => {
-        updatePointsProgress()
+        if (window.location.hostname.match(/makerworld\.(com|com\.cn)$/)) {
+            updatePointsProgress()
+        }
     })
 })
 
@@ -21,21 +23,32 @@ function updatePointsProgress() {
     pointElements.forEach((element) => {
         // 获取当前积分数（移除逗号并转换为数字）
         const currentPoints = parseInt(element.textContent.replace(/,/g, ''))
+        try {
+            // 从存储中获取目标积分
+            chrome.storage.sync.get(['targetPoints'], (result) => {
+                if (result.targetPoints) {
+                    const targetPoints = result.targetPoints
+                    const progress = (
+                        (currentPoints / targetPoints) *
+                        100
+                    ).toFixed(2)
 
-        // 从存储中获取目标积分
-        chrome.storage.sync.get(['targetPoints'], (result) => {
-            if (result.targetPoints) {
-                const targetPoints = result.targetPoints
-                const progress = ((currentPoints / targetPoints) * 100).toFixed(
-                    2
-                )
-
-                // 更新显示内容
-                element.textContent = `${currentPoints.toLocaleString()} (${progress}%)`
+                    // 更新显示内容
+                    element.textContent = `${currentPoints.toLocaleString()} (${progress}%)`
+                }
+            })
+        } catch (error) {
+            if (error.message.includes('Extension context invalidated')) {
+                console.log('Extension context invalidated, reloading...')
+                window.location.reload()
+            } else {
+                console.error('Error accessing storage:', error)
             }
-        })
+        }
     })
 }
 
 // 初始运行一次
-updatePointsProgress()
+if (window.location.hostname.match(/makerworld\.(com|com\.cn)$/)) {
+    updatePointsProgress()
+}
