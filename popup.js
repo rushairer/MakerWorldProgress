@@ -16,9 +16,11 @@ async function checkLoginStatus() {
             const isLoggedIn = cookies.some(
                 (cookie) => cookie.name === 'token' || cookie.name === 'session'
             )
-            
+
             statusElement.textContent = isLoggedIn ? '已登录' : '未登录'
-            statusElement.className = `status ${isLoggedIn ? 'logged-in' : 'logged-out'}`
+            statusElement.className = `status ${
+                isLoggedIn ? 'logged-in' : 'logged-out'
+            }`
 
             if (isLoggedIn) {
                 try {
@@ -26,15 +28,29 @@ async function checkLoginStatus() {
                         credentials: 'include',
                     })
                     const text = await response.text()
-                    const pointsMatch = text.match(/class="mw-css-yyek0l"[^>]*>([\d,]+)/i)
-                    
+                    const pointsMatch = text.match(
+                        /class="mw-css-yyek0l"[^>]*>([\d,]+)(?:.*?<em*>\.<!-- -->([\d]+))?/i
+                    )
+
                     if (pointsMatch) {
-                        const currentPoints = parseInt(pointsMatch[1].replace(/,/g, ''))
-                        const targetPoints = await chrome.storage.sync.get(['targetPoints'])
-                        const progress = targetPoints.targetPoints ? 
-                            ((currentPoints / targetPoints.targetPoints) * 100).toFixed(2) : '0.00'
-                        
-                        pointsElement.textContent = `${currentPoints.toLocaleString()} (${progress}%)`
+                        const integerPart = pointsMatch[1].replace(/,/g, '')
+                        const decimalPart = pointsMatch[2] || '00'
+                        const currentPoints = parseFloat(
+                            `${integerPart}.${decimalPart}`
+                        )
+                        const targetPoints = await chrome.storage.sync.get([
+                            'targetPoints',
+                        ])
+                        const progress = targetPoints.targetPoints
+                            ? (
+                                  (currentPoints / targetPoints.targetPoints) *
+                                  100
+                              ).toFixed(2)
+                            : '0.00'
+
+                        pointsElement.textContent = `${currentPoints.toFixed(
+                            2
+                        )} (${progress}%)`
                     } else {
                         pointsElement.textContent = '无法获取积分'
                     }
@@ -89,7 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 监听手动输入变化
     targetPointsInput.addEventListener('input', () => {
         // 如果输入的值不匹配任何预设值，清空预设值选择
-        if (!presetPointsSelect.querySelector(`option[value="${targetPointsInput.value}"]`)) {
+        if (
+            !presetPointsSelect.querySelector(
+                `option[value="${targetPointsInput.value}"]`
+            )
+        ) {
             presetPointsSelect.value = ''
         }
     })

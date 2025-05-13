@@ -22,7 +22,9 @@ function updatePointsProgress() {
 
     pointElements.forEach((element) => {
         // 获取当前积分数（移除逗号并转换为数字）
-        const currentPoints = parseInt(element.textContent.replace(/,/g, ''))
+        const currentPoints = parseFloat(
+            element.textContent.replace(/,/g, '')
+        ).toFixed(2)
         try {
             // 从存储中获取目标积分
             chrome.storage.sync.get(['targetPoints'], (result) => {
@@ -34,7 +36,20 @@ function updatePointsProgress() {
                     ).toFixed(2)
 
                     // 更新显示内容
-                    element.textContent = `${currentPoints.toLocaleString()} (${progress}%)`
+                    // 检查是否已经存在进度百分比
+                    if (
+                        !element.nextElementSibling ||
+                        !element.nextElementSibling.classList.contains(
+                            'progress-percentage'
+                        )
+                    ) {
+                        const progressSpan = document.createElement('span')
+                        progressSpan.className = 'progress-percentage'
+                        progressSpan.style.fontSize = '10px'
+                        progressSpan.style.marginLeft = '8px'
+                        progressSpan.textContent = `(${progress}%)`
+                        element.insertAdjacentElement('afterend', progressSpan)
+                    }
                 }
             })
         } catch (error) {

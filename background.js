@@ -52,9 +52,13 @@ async function checkPointsForSite(siteUrl) {
         const text = await response.text()
 
         // 解析积分
-        const pointsMatch = text.match(/class="mw-css-yyek0l"[^>]*>([\d,]+)/i)
+        const pointsMatch = text.match(
+            /class="mw-css-yyek0l"[^>]*>([\d,]+)(?:.*?<em*>\.<!-- -->([\d]+))?/i
+        )
         if (pointsMatch) {
-            const currentPoints = parseInt(pointsMatch[1].replace(/,/g, ''))
+            const integerPart = pointsMatch[1].replace(/,/g, '')
+            const decimalPart = pointsMatch[2] || '00'
+            const currentPoints = parseFloat(`${integerPart}.${decimalPart}`)
 
             // 从存储中获取上次的积分
             const data = await chrome.storage.sync.get([
@@ -71,7 +75,7 @@ async function checkPointsForSite(siteUrl) {
                     title: 'MakerWorld积分变动提醒',
                     message: `${new URL(siteUrl).hostname}积分${
                         diff > 0 ? '增加' : '减少'
-                    }了${Math.abs(diff)}点`,
+                    }了${Math.abs(diff).toFixed(2)}点`,
                 })
             }
 
