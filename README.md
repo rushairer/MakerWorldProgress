@@ -1,6 +1,7 @@
 # MakerWorld Progress 积分进度插件
 
 ## 功能介绍
+<img width="536" height="390" alt="image" src="https://github.com/user-attachments/assets/3a795614-cd59-4925-a414-724dff1fd844" />
 
 这是一个 Chrome 浏览器插件，用于显示 MakerWorld 网站的积分进度。它可以帮助用户设置积分目标，并实时显示当前积分达成的百分比，让用户更直观地了解自己的积分完成情况。
 
